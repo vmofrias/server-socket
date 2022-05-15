@@ -1,6 +1,10 @@
 package com.ldsk.server.model;
 
-public class Lance {
+import java.io.Serializable;
+
+public class Lance implements Serializable{
+	private static final long serialVersionUID = 1L;
+	
 	private int artigoId;
 	private String emailComprador;
 	private float valor;
@@ -10,11 +14,11 @@ public class Lance {
 
 	}
 
-	public Lance(int artigoId, String emailComprador, float valor, int foreignKey) {
+	public Lance(int artigoId, String emailComprador, float valor, int compradorForeignKey) {
 		this.artigoId = artigoId;
 		this.emailComprador = emailComprador;
 		this.valor = valor;
-		this.clienteCompradorForeignKey = foreignKey;
+		this.clienteCompradorForeignKey = compradorForeignKey;
 	}
 
 	public int getArtigoId() {

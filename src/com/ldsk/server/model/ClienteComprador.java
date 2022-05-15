@@ -7,7 +7,6 @@ public class ClienteComprador implements Serializable {
 
 	private int id;
 	private String email;
-	private float valorLance;
 	private static int cont = 1;
 	
 	public ClienteComprador() {
@@ -15,10 +14,9 @@ public class ClienteComprador implements Serializable {
 		cont++;
 	}
 	
-	public ClienteComprador(String email, float valorLance) {
+	public ClienteComprador(String email) {
 		this.id = cont;
 		this.email = email;
-		this.valorLance = valorLance;
 		cont++;
 	}
 	
@@ -36,14 +34,6 @@ public class ClienteComprador implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
-	}
-
-	public float getValorLance() {
-		return valorLance;
-	}
-
-	public void setValorLance(float valorLance) {
-		this.valorLance = valorLance;
 	}
 
 }

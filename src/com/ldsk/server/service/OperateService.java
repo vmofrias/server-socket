@@ -1,4 +1,4 @@
-package com.ldsk.server.controller;
+package com.ldsk.server.service;
 
 import java.util.ArrayList;
 
@@ -53,24 +53,35 @@ public class OperateService {
 	}
 	
 	public String executaLance(int artigoId, float valorLance, String emailContato) {
-		ClienteComprador cliente = new ClienteComprador(emailContato, valorLance);
-		listaComprador.adicionarComprador(cliente);
-		
-		Lance lance = new Lance(artigoId, cliente.getEmail(), cliente.getValorLance(),
-				cliente.getId());
-		
-		listaLances.adicionarLance(lance);
-		
-		Lance maiorValor = listaLances.maiorValor();
-		
-		if(lance.getClienteCompradorForeignKey() == maiorValor.getClienteCompradorForeignKey()) {
-			return "\nLance recebido com sucesso! \nO seu lance eh o maior ate o momento - \n" +
-					"Valor do lance: " + lance.getValor();
+		if(listaArtigo.verificaStatusPorId(artigoId) == StatusArtigo.ABERTO) {
+			ClienteComprador cliente = new ClienteComprador(emailContato);
+			listaComprador.adicionarComprador(cliente);
+			
+			Lance lance = new Lance(artigoId, cliente.getEmail(), valorLance,
+					cliente.getId());
+			
+			listaLances.adicionarLance(lance);
+			
+			Lance maiorValor = listaLances.maiorValor();
+			
+			if(lance.getClienteCompradorForeignKey() == maiorValor.getClienteCompradorForeignKey()) {
+				listaArtigo.getListaArtigos().get(artigoId).setValorFinal(valorLance);
+				
+				return "\nLance recebido com sucesso! \nO seu lance eh o maior ate o momento - \n" +
+						"Valor do lance: " + lance.getValor();
+			}else {
+				return "\nLance recebido com sucesso! \nO seu lance nao eh o maior ate o momento";
+			}
 		}else {
-			return "\nLance recebido com sucesso! \nO seu lance nao eh o maior ate o momento";
+			return "\nLeilao para esse artigo encerrado!";
 		}
 	}
 	
+	public ArrayList<Artigo> listarArtigosAbertos(){
+		ArrayList<Artigo> response = listaArtigo.getListaArtigos();
+		
+		return response;
+	}
 	
 	
 	public ArrayList<ClienteVendedor> listarClientesVendedores() {

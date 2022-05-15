@@ -2,9 +2,11 @@ package com.ldsk.server.controller;
 
 import java.util.ArrayList;
 
+import com.ldsk.server.model.Artigo;
 import com.ldsk.server.model.ClienteVendedor;
 import com.ldsk.server.protocol.Mensagem;
 import com.ldsk.server.protocol.StatusMensagem;
+import com.ldsk.server.service.OperateService;
 
 public class ControllerLeilao {
 	OperateService service = new OperateService();
@@ -45,6 +47,30 @@ public class ControllerLeilao {
 					
 				return reply;
 			
+				
+			case "LANCAR":
+				reply = new Mensagem("LANCAR_REPLY");
+				
+				int artigoId_ = (int) m.getParam("artigoId");
+				float valorLance = (float) m.getParam("valorLance");
+				String emailContato = (String) m.getParam("emailContato");
+					
+				String responseLancar = service.executaLance(artigoId_, valorLance, emailContato);
+					
+				reply.setParam("response", responseLancar);
+				reply.setStatusMensagem(StatusMensagem.OK);
+					
+				return reply;
+				
+			case "LISTAR_ARTIGOS":
+				
+				reply = new Mensagem("LISTAR_ARTIGOS_REPLY");
+					
+				ArrayList<Artigo> responseListarArtigos = service.listarArtigosAbertos();
+				reply.setParam("response", responseListarArtigos);
+				reply.setStatusMensagem(StatusMensagem.OK);
+				return reply;	
+				
 			case "LISTAR":
 				
 				reply = new Mensagem("LISTA_REPLY");
