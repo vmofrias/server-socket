@@ -1,0 +1,81 @@
+package com.ldsk.server.controller;
+
+import java.util.ArrayList;
+
+import com.ldsk.server.dao.ArtigoDAO;
+import com.ldsk.server.dao.ClienteCompradorDAO;
+import com.ldsk.server.dao.ClienteVendedorDAO;
+import com.ldsk.server.dao.LanceDAO;
+import com.ldsk.server.model.Artigo;
+import com.ldsk.server.model.ClienteComprador;
+import com.ldsk.server.model.ClienteVendedor;
+import com.ldsk.server.model.Lance;
+import com.ldsk.server.model.util.StatusArtigo;
+
+public class OperateService {
+	ArtigoDAO listaArtigo = new ArtigoDAO();
+	ClienteVendedorDAO listaVendedor = new ClienteVendedorDAO();
+	ClienteCompradorDAO listaComprador = new ClienteCompradorDAO();
+	LanceDAO listaLances = new LanceDAO();
+	
+	public String iniciaLeilao(String nomeVendedor, String descricaoArtigo, float valorInicial) {
+		ClienteVendedor cliente = new ClienteVendedor();
+		cliente.setNome(nomeVendedor);
+		Artigo artigo = new Artigo(descricaoArtigo, valorInicial, cliente.getId());
+		cliente.setArtigo(artigo);
+		
+		listaArtigo.adicionarArtigo(artigo);
+		listaVendedor.adicionarVendedor(cliente);
+		
+		//ArrayList<ClienteVendedor> response = listaVendedor.getListaVendedor();
+		String response = "Vendedor de ID " + cliente.getId() +
+				" " + cliente.getNome() + " - iniciou um leilao com sucesso.";
+		
+		return response;
+	}
+	
+	public String encerraLeilao(int idVendedor, int artigoId) {
+		for (Artigo artigo : listaArtigo.getListaArtigos()) {
+			if(artigo.getValorInicial() != 0) {
+				if((artigo.getClienteVendedorForeignKey() == idVendedor) && artigo.getId() == artigoId) {
+					artigo.setStatusArtigo(StatusArtigo.ENCERRADO);
+					Lance vencedor = listaLances.maiorValor();
+					
+					return "Leilao do artigo id " + artigo.getId() + " encerrado!\n" +
+					"O vencedor do leilao foi :\n\n" + vencedor;
+				}
+			}else {
+				return "Não houveram lances para o mesmo.";
+			}
+		}
+		
+		return null;
+	}
+	
+	public String executaLance(int artigoId, float valorLance, String emailContato) {
+		ClienteComprador cliente = new ClienteComprador(emailContato, valorLance);
+		listaComprador.adicionarComprador(cliente);
+		
+		Lance lance = new Lance(artigoId, cliente.getEmail(), cliente.getValorLance(),
+				cliente.getId());
+		
+		listaLances.adicionarLance(lance);
+		
+		Lance maiorValor = listaLances.maiorValor();
+		
+		if(lance.getClienteCompradorForeignKey() == maiorValor.getClienteCompradorForeignKey()) {
+			return "\nLance recebido com sucesso! \nO seu lance eh o maior ate o momento - \n" +
+					"Valor do lance: " + lance.getValor();
+		}else {
+			return "\nLance recebido com sucesso! \nO seu lance nao eh o maior ate o momento";
+		}
+	}
+	
+	
+	
+	public ArrayList<ClienteVendedor> listarClientesVendedores() {
+		ArrayList<ClienteVendedor> response = listaVendedor.getListaVendedor();
+		
+		return response;
+	}
+}
