@@ -2,6 +2,8 @@ package com.ldsk.server.controller;
 
 import java.util.ArrayList;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.ldsk.server.model.Artigo;
 import com.ldsk.server.model.ClienteVendedor;
 import com.ldsk.server.protocol.Mensagem;
@@ -19,66 +21,69 @@ public class ControllerLeilao {
 		
 		try {
 			switch(operacao) {
-			case "VENDA":
-				reply = new Mensagem("VENDA_REPLY");
+				case "VENDA":
+					reply = new Mensagem("VENDA_REPLY");
+						
+					String nomeVendedor = (String) m.getParam("nomeVendedor");
+					String descricaoArtigo = (String) m.getParam("descricaoArtigo");
+					float valorInicial = (float) m.getParam("valorInicial");
+						
+					String responseVenda = service.iniciaLeilao(nomeVendedor, descricaoArtigo, valorInicial);
 					
-				String nomeVendedor = (String) m.getParam("nomeVendedor");
-				String descricaoArtigo = (String) m.getParam("descricaoArtigo");
-				float valorInicial = (float) m.getParam("valorInicial");
+					JsonParser jsonParser = new JsonParser();
+					JsonObject jsonObject = (JsonObject) jsonParser.parse(responseVenda);
 					
-				String responseVenda = service.iniciaLeilao(nomeVendedor, descricaoArtigo, valorInicial);
+					reply.setParam("response", jsonObject);
+					reply.setStatusMensagem(StatusMensagem.OK);
+						
+					return reply;
 					
-				reply.setParam("response", responseVenda);
-				reply.setStatusMensagem(StatusMensagem.OK);
-					
-				return reply;
 				
-			
-			case "ENCERRAR":
-				reply = new Mensagem("ENCERRAR_REPLY");
-					
-				int idVendedor = (int) m.getParam("idVendedor");
-				int artigoId = (int) m.getParam("artigoId");
-					
-				String responseEncerrar = service.encerraLeilao(idVendedor, artigoId);
-					
-				reply.setParam("response", responseEncerrar);
-				reply.setStatusMensagem(StatusMensagem.OK);
-					
-				return reply;
-			
+				case "ENCERRAR":
+					reply = new Mensagem("ENCERRAR_REPLY");
+						
+					int idVendedor = (int) m.getParam("idVendedor");
+					int artigoId = (int) m.getParam("artigoId");
+						
+					String responseEncerrar = service.encerraLeilao(idVendedor, artigoId);
+						
+					reply.setParam("response", responseEncerrar);
+					reply.setStatusMensagem(StatusMensagem.OK);
+						
+					return reply;
 				
-			case "LANCAR":
-				reply = new Mensagem("LANCAR_REPLY");
-				
-				int artigoId_ = (int) m.getParam("artigoId");
-				float valorLance = (float) m.getParam("valorLance");
-				String emailContato = (String) m.getParam("emailContato");
 					
-				String responseLancar = service.executaLance(artigoId_, valorLance, emailContato);
+				case "LANCAR":
+					reply = new Mensagem("LANCAR_REPLY");
 					
-				reply.setParam("response", responseLancar);
-				reply.setStatusMensagem(StatusMensagem.OK);
+					int artigoId_ = (int) m.getParam("artigoId");
+					float valorLance = (float) m.getParam("valorLance");
+					String emailContato = (String) m.getParam("emailContato");
+						
+					String responseLancar = service.executaLance(artigoId_, valorLance, emailContato);
+						
+					reply.setParam("response", responseLancar);
+					reply.setStatusMensagem(StatusMensagem.OK);
+						
+					return reply;
 					
-				return reply;
-				
-			case "LISTAR_ARTIGOS":
-				
-				reply = new Mensagem("LISTAR_ARTIGOS_REPLY");
+				case "LISTAR_ARTIGOS":
 					
-				ArrayList<Artigo> responseListarArtigos = service.listarArtigosAbertos();
-				reply.setParam("response", responseListarArtigos);
-				reply.setStatusMensagem(StatusMensagem.OK);
-				return reply;	
-				
-			case "LISTAR":
-				
-				reply = new Mensagem("LISTA_REPLY");
+					reply = new Mensagem("LISTAR_ARTIGOS_REPLY");
+						
+					ArrayList<Artigo> responseListarArtigos = service.listarArtigosAbertos();
+					reply.setParam("response", responseListarArtigos);
+					reply.setStatusMensagem(StatusMensagem.OK);
+					return reply;	
 					
-				ArrayList<ClienteVendedor> responseListar = service.listarClientesVendedores();
-				reply.setParam("response", responseListar);
-				reply.setStatusMensagem(StatusMensagem.OK);
-				return reply;
+				case "LISTAR":
+					
+					reply = new Mensagem("LISTA_REPLY");
+						
+					ArrayList<ClienteVendedor> responseListar = service.listarClientesVendedores();
+					reply.setParam("response", responseListar);
+					reply.setStatusMensagem(StatusMensagem.OK);
+					return reply;
 			}
 		} catch (Exception e) {
 			reply = new Mensagem("SERVER_REPLY");
