@@ -36,20 +36,20 @@ public class OperateService {
 	
 	public String encerraLeilao(int idVendedor, int artigoId) {
 		for (Artigo artigo : listaArtigo.getListaArtigos()) {
-			if(artigo.getValorInicial() != 0) {
-				if((artigo.getClienteVendedorForeignKey() == idVendedor) && artigo.getId() == artigoId) {
-					artigo.setStatusArtigo(StatusArtigo.ENCERRADO);
-					Lance vencedor = listaLances.maiorValor();
-					
-					return "Leilao do artigo id " + artigo.getId() + " encerrado!\n" +
-					"O vencedor do leilao foi :\n\n" + vencedor;
-				}
-			}else {
-				return "Não houveram lances para o mesmo.";
+			if((artigo.getClienteVendedorForeignKey() == idVendedor) && (artigo.getId() == artigoId)) {
+				artigo.setStatusArtigo(StatusArtigo.ENCERRADO);
+				Lance vencedor = listaLances.maiorValor(artigoId);
+				
+				String response =  "Leilao do artigo id " + artigo.getId() + " encerrado!\n" +
+				"O vencedor do leilao foi :\n\n" + vencedor;
+				
+				System.out.println("I AM HERE NHHAHAHA");
+				
+				return response;
 			}
 		}
 		
-		return null;
+		return "Não houveram lances para o mesmo.";
 	}
 	
 	public String executaLance(int artigoId, float valorLance, String emailContato) {
@@ -62,7 +62,7 @@ public class OperateService {
 			
 			listaLances.adicionarLance(lance);
 			
-			Lance maiorValor = listaLances.maiorValor();
+			Lance maiorValor = listaLances.maiorValor(artigoId);
 			
 			if(lance.getClienteCompradorForeignKey() == maiorValor.getClienteCompradorForeignKey()) {
 				listaArtigo.getListaArtigos().get(artigoId).setValorFinal(valorLance);

@@ -13,11 +13,17 @@ public class LanceDAO {
 		listaLances.add(lance);
 	}
 	
-	public Lance maiorValor() {
-		Lance lance = listaLances.stream().max(Comparator.comparing(Lance::getValor))
-		.orElseThrow(NoSuchElementException::new);
+	public Lance maiorValor(int artigoId) {
+		for (Lance lance : listaLances) {
+			if(lance.getArtigoId() == artigoId) {
+				Lance vencedor = listaLances.stream().max(Comparator.comparing(Lance::getValor))
+						.orElseThrow(NoSuchElementException::new);
+				
+				return vencedor;
+			}
+		}
 		
-		return lance;
+		return null;
 	}
 	
 	public static ArrayList<Lance> getListaLances() {
