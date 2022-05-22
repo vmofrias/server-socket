@@ -6,8 +6,6 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.ldsk.server.controller.ControllerLeilao;
 import com.ldsk.server.protocol.Mensagem;
 

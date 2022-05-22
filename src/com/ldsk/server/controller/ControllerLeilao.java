@@ -2,8 +2,6 @@ package com.ldsk.server.controller;
 
 import java.util.ArrayList;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.ldsk.server.model.Artigo;
 import com.ldsk.server.model.ClienteVendedor;
 import com.ldsk.server.protocol.Mensagem;
@@ -30,10 +28,7 @@ public class ControllerLeilao {
 						
 					String responseVenda = service.iniciaLeilao(nomeVendedor, descricaoArtigo, valorInicial);
 					
-					JsonParser jsonParser = new JsonParser();
-					JsonObject jsonObject = (JsonObject) jsonParser.parse(responseVenda);
-					
-					reply.setParam("response", jsonObject);
+					reply.setParam("response", responseVenda);
 					reply.setStatusMensagem(StatusMensagem.OK);
 						
 					return reply;

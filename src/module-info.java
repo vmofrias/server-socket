@@ -1,3 +1,3 @@
 module Server {
-	requires gson;
+	
 }
