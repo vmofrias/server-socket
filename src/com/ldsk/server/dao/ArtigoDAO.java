@@ -12,6 +12,14 @@ public class ArtigoDAO {
 		listaArtigos.add(artigo);
 	}
 	
+	public void atualizaValorFinalPorId(int artigoId, float valor) {
+		for (Artigo artigo : listaArtigos) {
+			if(artigo.getId() == artigoId) {
+				artigo.setValorFinal(valor);
+			}
+		}
+	}
+	
 	public StatusArtigo verificaStatusPorId(int id) {
 		for (Artigo artigo : listaArtigos) {
 			if(artigo.getId() == id) {

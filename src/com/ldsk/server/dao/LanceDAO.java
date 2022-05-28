@@ -3,6 +3,7 @@ package com.ldsk.server.dao;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import com.ldsk.server.model.Lance;
 
@@ -14,19 +15,19 @@ public class LanceDAO {
 	}
 	
 	public Lance maiorValor(int artigoId) {
-		for (Lance lance : listaLances) {
-			if(lance.getArtigoId() == artigoId) {
-				Lance vencedor = listaLances.stream().max(Comparator.comparing(Lance::getValor))
-						.orElseThrow(NoSuchElementException::new);
-				
-				return vencedor;
-			}
-		}
+		Lance vencedor = listaLances.stream().filter(a -> a.getArtigoId() == artigoId)
+				.max(Comparator.comparing(Lance::getValor))
+				.orElseThrow(NoSuchElementException::new);
 		
-		return null;
+		return vencedor;
 	}
 	
-	public static ArrayList<Lance> getListaLances() {
+	public boolean isEmptyByArtigoId(int artigoId) {
+		return listaLances.stream().filter(l -> l.getArtigoId() == artigoId)
+		.collect(Collectors.toList()).isEmpty();
+	}
+	
+	public ArrayList<Lance> getListaLances() {
 		return listaLances;
 	}
 }

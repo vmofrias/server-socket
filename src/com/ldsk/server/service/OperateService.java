@@ -27,7 +27,6 @@ public class OperateService {
 		listaArtigo.adicionarArtigo(artigo);
 		listaVendedor.adicionarVendedor(cliente);
 		
-		//ArrayList<ClienteVendedor> response = listaVendedor.getListaVendedor();
 		String response = "Vendedor de ID " + cliente.getId() +
 				" " + cliente.getNome() + " - iniciou um leilao com sucesso.";
 		
@@ -38,21 +37,29 @@ public class OperateService {
 		for (Artigo artigo : listaArtigo.getListaArtigos()) {
 			if((artigo.getClienteVendedorForeignKey() == idVendedor) && (artigo.getId() == artigoId)) {
 				artigo.setStatusArtigo(StatusArtigo.ENCERRADO);
-				Lance vencedor = listaLances.maiorValor(artigoId);
+				String response;
 				
-				String response =  "Leilao do artigo id " + artigo.getId() + " encerrado!\n" +
-				"O vencedor do leilao foi :\n\n" + vencedor;
-				
-				System.out.println("I AM HERE NHHAHAHA");
+				if(listaLances.isEmptyByArtigoId(artigoId)) {
+					
+					response =  "Leilao do artigo id " + artigo.getId() + " encerrado!\n" +
+							"Leilao encerrado sem nenhum lance.";
+				}else {
+					Lance vencedor = listaLances.maiorValor(artigoId);
+					
+					response =  "Leilao do artigo id " + artigo.getId() + " encerrado!\n" +
+					"O vencedor do leilao foi :\n\n" + vencedor;
+				}
 				
 				return response;
 			}
 		}
 		
-		return "Não houveram lances para o mesmo.";
+		return "Artigo nao equivalente ao vendedor responsavel inserido.";
 	}
 	
 	public String executaLance(int artigoId, float valorLance, String emailContato) {
+		String response;
+		
 		if(listaArtigo.verificaStatusPorId(artigoId) == StatusArtigo.ABERTO) {
 			ClienteComprador cliente = new ClienteComprador(emailContato);
 			listaComprador.adicionarComprador(cliente);
@@ -65,20 +72,31 @@ public class OperateService {
 			Lance maiorValor = listaLances.maiorValor(artigoId);
 			
 			if(lance.getClienteCompradorForeignKey() == maiorValor.getClienteCompradorForeignKey()) {
-				listaArtigo.getListaArtigos().get(artigoId).setValorFinal(valorLance);
+				listaArtigo.atualizaValorFinalPorId(artigoId, valorLance);
 				
-				return "\nLance recebido com sucesso! \nO seu lance eh o maior ate o momento - \n" +
+				response = "\nLance recebido com sucesso! \nO seu lance eh o maior ate o momento - \n" +
 						"Valor do lance: " + lance.getValor();
-			}else {
-				return "\nLance recebido com sucesso! \nO seu lance nao eh o maior ate o momento";
+				
+				return response;
+			}else {				
+				response = "\nLance recebido com sucesso! \nO seu lance nao eh o maior ate o momento";
+				return response;
 			}
 		}else {
-			return "\nLeilao para esse artigo encerrado!";
+			response = "\nLeilao para esse artigo encerrado!";
+			
+			return response;
 		}
 	}
 	
 	public ArrayList<Artigo> listarArtigosAbertos(){
-		ArrayList<Artigo> response = listaArtigo.getListaArtigos();
+		ArrayList<Artigo> response = new ArrayList<Artigo>();
+		
+		for (Artigo artigo : listaArtigo.getListaArtigos()) {
+			if(artigo.getStatusArtigo() == StatusArtigo.ABERTO) {
+				response.add(artigo);
+			}
+		}
 		
 		return response;
 	}

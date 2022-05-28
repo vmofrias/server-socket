@@ -13,12 +13,12 @@ public class Server {
 		try {
 			System.out.println("Aguardando conexao...");
 			socketService.criarServerSocket(5555);
-			System.out.println("Cliente conectado.");
+			
 			
 			while(true) {
 				Socket socket = socketService.esperaConexao();
+				System.out.println("Cliente conectado.");
 				socketService.trataConexao(socket);
-				System.out.println("Cliente finalizado.");
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
