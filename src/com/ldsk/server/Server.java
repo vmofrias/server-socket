@@ -9,10 +9,12 @@ public class Server {
 	
 	public static void main(String[] args) {
 		SocketService socketService = new SocketService();
-		
+		int port = 12345;		
+
 		try {
 			System.out.println("Aguardando conexao...");
-			socketService.criarServerSocket(5555);
+			socketService.criarServerSocket(port);
+			System.out.println("Server rodando na porta: " + port);
 			
 			
 			while(true) {
