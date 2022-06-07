@@ -33,4 +33,15 @@ public class ArtigoDAO {
 	public ArrayList<Artigo> getListaArtigos() {
 		return listaArtigos;
 	}
+
+	public boolean verificaValor(int artigoId, float valorLance) {
+		for(Artigo artigo : listaArtigos) {
+			if(artigo.getId() == artigoId) {
+				if(artigo.getValorInicial() > valorLance) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

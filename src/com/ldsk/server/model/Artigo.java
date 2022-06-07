@@ -27,7 +27,6 @@ public class Artigo implements Serializable {
 		this.valorInicial = valorInicial;
 		this.clienteVendedorForeignKey = foreignKey;
 		this.statusArtigo = StatusArtigo.ABERTO;
-		this.valorFinal = valorInicial;
 		cont++;
 	}
 
@@ -82,7 +81,7 @@ public class Artigo implements Serializable {
 	@Override
 	public String toString() {
 		return "\n\nId do artigo: " + this.id +"\nDescricao: " + this.descricao +
-				"\nMaior lance ate o momento: " + this.valorFinal;
+				"\nValor inicial: " + this.valorInicial + "\nMaior lance ate o momento: " + this.valorFinal;
 	}
 	
 	public String toAlternativeString() {

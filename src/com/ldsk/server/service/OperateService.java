@@ -61,32 +61,36 @@ public class OperateService {
 		String response;
 		
 		if(listaArtigo.verificaStatusPorId(artigoId) == StatusArtigo.ABERTO) {
-			ClienteComprador cliente = new ClienteComprador(emailContato);
-			listaComprador.adicionarComprador(cliente);
-			
-			Lance lance = new Lance(artigoId, cliente.getEmail(), valorLance,
-					cliente.getId());
-			
-			listaLances.adicionarLance(lance);
-			
-			Lance maiorValor = listaLances.maiorValor(artigoId);
-			
-			if(lance.getClienteCompradorForeignKey() == maiorValor.getClienteCompradorForeignKey()) {
-				listaArtigo.atualizaValorFinalPorId(artigoId, valorLance);
+			if(listaArtigo.verificaValor(artigoId, valorLance)) {
+				ClienteComprador cliente = new ClienteComprador(emailContato);
+				listaComprador.adicionarComprador(cliente);
 				
-				response = "\nLance recebido com sucesso! \nO seu lance eh o maior ate o momento - \n" +
-						"Valor do lance: " + lance.getValor();
+				Lance lance = new Lance(artigoId, cliente.getEmail(), valorLance,
+						cliente.getId());
 				
-				return response;
-			}else {				
-				response = "\nLance recebido com sucesso! \nO seu lance nao eh o maior ate o momento";
-				return response;
+				listaLances.adicionarLance(lance);
+				
+				Lance maiorValor = listaLances.maiorValor(artigoId);
+				
+				if(lance.getClienteCompradorForeignKey() == maiorValor.getClienteCompradorForeignKey()) {
+					listaArtigo.atualizaValorFinalPorId(artigoId, valorLance);
+					
+					response = "\nLance recebido com sucesso! \nO seu lance eh o maior ate o momento - \n" +
+							"Valor do lance: " + lance.getValor();
+					
+					return response;
+				}else {				
+					response = "\nLance recebido com sucesso! \nO seu lance nao eh o maior ate o momento";
+					return response;
+				}
+			}else {
+				return "\nValor do lance menor que o valor inicial do artigo!";
 			}
-		}else {
+		}else{
 			response = "\nLeilao para esse artigo encerrado!";
 			
 			return response;
-		}
+		}			
 	}
 	
 	public ArrayList<Artigo> listarArtigosAbertos(){
