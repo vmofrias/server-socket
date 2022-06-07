@@ -38,10 +38,10 @@ public class ArtigoDAO {
 		for(Artigo artigo : listaArtigos) {
 			if(artigo.getId() == artigoId) {
 				if(artigo.getValorInicial() > valorLance) {
-					return true;
+					return false;
 				}
 			}
 		}
-		return false;
+		return true;
 	}
 }
